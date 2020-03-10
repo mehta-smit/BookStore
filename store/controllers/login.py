@@ -10,11 +10,7 @@ from store.engine.user_management.login import login
 
 class LoginSchema(Schema):
     user_name = field.Str(required=True)
-    email = field.Email(required=True, validate=[validate.Regexp(
-        '^([a-zA-Z0-9_\-\.\+]+[^\+\-])@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,15})$')])
-    phone = field.Str(required=True)
     password = field.Str(required=True)
-    confirm_password = field.Str(required=True)
 
     class Meta:
         strict = True
@@ -30,9 +26,12 @@ class Login(APIResource):
     @use_kwargs(LoginSchema)
     @marshal_with(login_response)
     def post(self, **request_params):
-        app.logger.info("Login Request For Email :: {}".format(request_params.get("email")))
+        print(request_params)
+        app.logger.info("Login Request For User Name :: {}".format(request_params.get("user_name")))
         response = login(**request_params)
-
         if response:
             session.commit()
         return response
+
+    def get(self):
+        return 200

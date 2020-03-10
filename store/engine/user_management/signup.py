@@ -1,6 +1,7 @@
 from store.models import session, get_orm_column_mapping
 from store.models.user import User
 from . import generate_at_and_rt
+from store.engine.utils import utc_now
 
 
 def verify_user_exists(email):
@@ -21,9 +22,8 @@ def sign_up(**kwargs):
 
     if is_exists:
         raise ValueError("USER-EXISTS-WITH-EMAIL")
-
+    kwargs.update(last_login=utc_now())
     user_obj = add_user(**kwargs)
-    User.update_last_login(user_id=user_obj.id)
     access_token, refresh_token = generate_at_and_rt(user_obj)
     return dict(access_token=access_token, refresh_token=refresh_token)
 

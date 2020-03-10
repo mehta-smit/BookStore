@@ -17,7 +17,7 @@ def resource_exceptions(fn):
             app.logger.error(repr(val_err))
             abort(400, message=str(val_err))
         except (ValidationError, UnprocessableEntity) as val_err:
-            app.logger.exception(repr(val_err))
+            app.logger.error(repr(val_err))
             try:
                 message = val_err.data.get("messages", None)
             except Exception as sa_err:

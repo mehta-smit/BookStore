@@ -73,22 +73,28 @@
                         "phone": $('#phone_txt').val(),
                         "password": password
                     };
-                    console.log(data);
+                    $('#SignIn').prop('disabled', true);
                     $.ajax({
-                        url: "/common/signup",
+                        url: "{{ url_for('rtregister') }}",
                         type: 'POST',
-                        data: data.serialize(),
+                        data: data,
                         success: function (response) {
-                            console.log(response.errstr);
                             if (response.error === 'True' ){
-                                $('#err_lbl').text(response.errstr);
+                                $('#err_lbl').text(response.message);
+                                $('#SignIn').prop('disabled', false);
                             }
                             else{
-                                $('#err_lbl').text(response.errstr);
-                                window.location = response.url;
+                                var access_token = response.data.access_token;
+                                var refresh_token = response.data.fresh_token;
+                                localStorage.setItem('access_token', "JWT " + access_token);
+                                localStorage.setItem('refresh_token', "JWT " + refresh_token);
+
+                                alert(localStorage.getItem('access_token'));
+                                window.location = "{{ url_for('book') }}";
                             }
                         },
                         error: function (error) {
+                            $('#SignIn').prop('disabled', false);
                             console.log(error);
                         }
                     });
