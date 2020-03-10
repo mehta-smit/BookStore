@@ -38,5 +38,14 @@ def rtregister():
 
 
 @app.route('/forget', methods=['get', 'post'])
-def rtfpwd():
+def rtforget_pwd():
+    if request.method == "POST":
+        data = request.form
+        forget_pwd_url = app.config.get("HOST_URL") + "common/forget-password"
+        response = requests.post(forget_pwd_url, data=json.dumps(data), headers={'content-type': 'application/json'})
+        status_code = response.status_code
+        text = json.loads(response.text)
+        if status_code != 200:
+            return dict(status=status_code, message=text, error=True)
+        return dict(staus=status_code, data=text, error=False)
     return render_template('forgetpwd.html', title="Forget")
